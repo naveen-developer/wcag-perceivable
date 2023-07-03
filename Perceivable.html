@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WCAG - Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.all.min.js"></script>
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+		text-align: center;
+		font-family: 'Josefin Sans', sans-serif;
+	}
+	.parrent_div{
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.child_div{
+		width: 40rem;
+		height: auto;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		background: #d3e9fa;
+	}
+
+	h1{
+		margin-top: 25px;
+	}
+
+	p{
+		font-size: 21px;
+		margin: 20px 0;
+	}
+
+	button{
+		margin: 15px 0;
+	}
+
+	#demo2, #wrong_ans{
+		color: red;
+	}
+
+	#demo3, #right_ans{
+		color: green;
+	}
+
+	#result{
+		display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-right: 1rem;
+    margin-top: 1rem;
+	}
+
+	#result div{
+		    border: 1px solid black;
+		    padding: 10px;
+    		border-radius: 50px;
+    		margin: 0 4px;
+    		width: 4rem;
+    		background: white;
+    		font-weight: bold;
+	}
+
+	button{
+		padding: 10px 20px;
+	}
+
+	input{
+		width: 28rem;
+		font-size: 18px;
+		height: 25px;
+		text-align: start;
+		padding-left: 10px;
+	}
+</style>
+</head>
+<body>
+<main>
+	<div class="parrent_div">
+		<div class="child_div">
+			<h1>WCAG Success Criteria Adaptable Quiz</h1>
+			<div id="result">
+				<div id="right_ans">Right 0</div>
+				<div id="wrong_ans">Wrong 0</div>
+			</div>
+			<div>
+				<p id="demo1"></p>
+				<button id="rg_button" onclick="selectUniqueSubject()">Start Quiz</button>
+			</div>
+			<div id="input_div">
+			    <input type="text" id="ans_input" placeholder="Enter you expected guideline as per above number" aria-lable="Enter you expected guideline as per above number" required><br />
+			    <button type="submit" onclick="checkAwnser()">Submit</button>
+			</div>
+			<div>
+				<p id="demo2"></p>
+				<p id="demo3"></p>
+			</div>
+		</div>
+	</div>
+</main>
+
+<script>
+var Perceivable = [
+			'Success Criterion 1.1.1 Non-text Content',
+			'Success Criterion 1.2.1 Audio-only and Video-only (Prerecorded)',
+			'Success Criterion 1.2.2 Captions (Prerecorded)',
+			'Success Criterion 1.2.3 Audio Description or Media Alternative (Prerecorded)',
+			'Success Criterion 1.2.4 Captions (Live)',
+			'Success Criterion 1.2.5 Audio Description (Prerecorded)',
+			'Success Criterion 1.2.6 Sign Language (Prerecorded)',
+			'Success Criterion 1.2.7 Extended Audio Description (Prerecorded)',
+			'Success Criterion 1.2.8 Media Alternative (Prerecorded)',
+			'Success Criterion 1.2.9 Audio-only (Live)',
+			'Success Criterion 1.3.1 Info and Relationships',
+			'Success Criterion 1.3.2 Meaningful Sequence',
+			'Success Criterion 1.3.3 Sensory Characteristics',
+			'Success Criterion 1.3.4 Orientation',
+			'Success Criterion 1.3.5 Identify Input Purpose',
+			'Success Criterion 1.3.6 Identify Purpose',
+			'Success Criterion 1.4.1 Use of Color',
+			'Success Criterion 1.4.2 Audio Control',
+			'Success Criterion 1.4.3 Contrast (Minimum)',
+			'Success Criterion 1.4.4 Resize text',
+			'Success Criterion 1.4.5 Images of Text',
+			'Success Criterion 1.4.6 Contrast (Enhanced)',
+			'Success Criterion 1.4.7 Low or No Background Audio',
+			'Success Criterion 1.4.8 Visual Presentation',
+			'Success Criterion 1.4.9 Images of Text (No Exception)',
+			'Success Criterion 1.4.10 Reflow',
+			'Success Criterion 1.4.11 Non-text Contrast',
+			'Success Criterion 1.4.12 Text Spacing',
+			'Success Criterion 1.4.13 Content on Hover or Focus'
+	];
+
+var selectedPerceivable = [];
+var display_subject = "";
+let right_ans_count = 0;
+let wrong_ans_count = 0;
+
+document.getElementById("input_div").style.display = "none";
+document.getElementById("result").style.display = "none";
+
+function selectUniqueSubject() {
+
+	document.getElementById("rg_button").innerHTML = "Random Success Criteria";
+	document.getElementById("input_div").style.display = "block";
+	document.getElementById("result").style.display = "flex";
+	document.getElementById("ans_input").value = "";
+	
+	document.getElementById("ans_input").focus();
+
+	document.getElementById("demo2").innerHTML = "";
+	document.getElementById("demo3").innerHTML = "";
+
+  if (Perceivable.length > 0) {
+    var randomIndex = Math.floor(Math.random() * Perceivable.length);
+    var randomSubject = Perceivable.splice(randomIndex, 1)[0];
+    selectedPerceivable.push(randomSubject);
+    display_subject = randomSubject.substring(24, 100);
+    document.getElementById("demo1").innerHTML =  randomSubject.substring(0, 23);
+  } else {
+    document.getElementById("demo1").innerHTML = "No more Success Criteria available";
+  }
+}
+
+const checkAwnser = () => {
+  var ans_input = document.getElementById("ans_input").value;
+
+  //document.getElementById("demo2").innerHTML = ans_input === display_subject ? "Correct" : "Wrong";
+
+if(!ans_input){
+	alert("Please enter Success Criteria Name")
+}else{
+	  if(ans_input.toLowerCase().trim() === display_subject.toLowerCase().trim()){
+	  	right_ans_count++;
+	  	document.getElementById("right_ans").innerHTML = "Right "+right_ans_count;
+	  	Swal.fire({
+  icon: 'success',
+  title: 'Nice... You entered right answer',
+})
+	document.getElementById("demo3").innerHTML = "<i class='fa-regular fa-circle-check' aria-hidden='true'></i> You entered correct awnser";  
+	document.getElementById("demo2").innerHTML = "";	
+  }else{
+  	wrong_ans_count++;
+  	document.getElementById("wrong_ans").innerHTML = "Wrong "+wrong_ans_count;
+  	Swal.fire({
+  icon: 'error',
+  title: 'Correct awnser is :- '+display_subject,
+})
+  	document.getElementById("demo2").innerHTML = " <i class='fa-regular fa-circle-xmark' aria-hidden='true'></i> You entered awnser is :- "+ans_input;
+  	document.getElementById("demo3").innerHTML = "<i class='fa-regular fa-circle-check' aria-hidden='true'></i> Correct awnser is :- "+display_subject;
+  }	
+}
+
+}
+
+  </script>
+</body>
+</html>
+
