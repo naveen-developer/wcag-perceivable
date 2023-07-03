@@ -166,7 +166,7 @@ function selectUniqueSubject() {
     var randomSubject = Perceivable.splice(randomIndex, 1)[0];
     selectedPerceivable.push(randomSubject);
     display_subject = randomSubject.substring(24, 100);
-    document.getElementById("demo1").innerHTML =  randomSubject.substring(0, 23);
+    document.getElementById("demo1").innerHTML =  randomSubject.substring(0, 24);
   } else {
     document.getElementById("demo1").innerHTML = "No more Success Criteria available";
   }
