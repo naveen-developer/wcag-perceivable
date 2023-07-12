@@ -23,8 +23,9 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		flex-direction: column;
 	}
-	.child_div{
+	.child_div, #missed_sc{
 		width: 40rem;
 		height: auto;
 		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -74,6 +75,14 @@
 		padding: 10px 20px;
 	}
 
+    button:disabled,
+    button[disabled]{
+        border: 1px solid #999999;
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+
 	input{
 		width: 28rem;
 		font-size: 18px;
@@ -81,7 +90,21 @@
 		text-align: start;
 		padding-left: 10px;
 	}
-	
+
+	#missed_sc{
+        padding: 15px 35px;
+	}
+
+	p{
+		margin-bottom: 13px;
+		font-size: 20px;
+		font-weight: bold;
+	}
+
+    ol li{
+        text-align: start;
+        line-height: 25px;
+    }
 </style>
 </head>
 <body>
@@ -99,56 +122,67 @@
 			</div>
 			<div id="input_div">
 			    <input type="text" id="ans_input" placeholder="Enter you expected guideline as per above number" aria-lable="Enter you expected guideline as per above number" required><br />
-			    <button type="submit" onclick="checkAwnser()">Submit</button>
+			    <button type="submit" id="submit_btn" onclick="checkAwnser(); displayMissedSC();">Submit</button>
 			</div>
 			<div>
 				<p id="demo2"></p>
 				<p id="demo3"></p>
 			</div>
 		</div>
+		<div id="missed_sc">
+				<p>Missed Success Criteria</p>
+				<ol id="list_missed_sc">
+
+				</ol>
+		</div>
 	</div>
 </main>
 
 <script>
 var Perceivable = [
-			'Success Criterion 1.1.1 Non-text Content',
-			'Success Criterion 1.2.1 Audio-only and Video-only (Prerecorded)',
-			'Success Criterion 1.2.2 Captions (Prerecorded)',
-			'Success Criterion 1.2.3 Audio Description or Media Alternative (Prerecorded)',
-			'Success Criterion 1.2.4 Captions (Live)',
-			'Success Criterion 1.2.5 Audio Description (Prerecorded)',
-			'Success Criterion 1.2.6 Sign Language (Prerecorded)',
-			'Success Criterion 1.2.7 Extended Audio Description (Prerecorded)',
-			'Success Criterion 1.2.8 Media Alternative (Prerecorded)',
-			'Success Criterion 1.2.9 Audio-only (Live)',
-			'Success Criterion 1.3.1 Info and Relationships',
-			'Success Criterion 1.3.2 Meaningful Sequence',
-			'Success Criterion 1.3.3 Sensory Characteristics',
-			'Success Criterion 1.3.4 Orientation',
-			'Success Criterion 1.3.5 Identify Input Purpose',
-			'Success Criterion 1.3.6 Identify Purpose',
-			'Success Criterion 1.4.1 Use of Color',
-			'Success Criterion 1.4.2 Audio Control',
-			'Success Criterion 1.4.3 Contrast (Minimum)',
-			'Success Criterion 1.4.4 Resize text',
-			'Success Criterion 1.4.5 Images of Text',
-			'Success Criterion 1.4.6 Contrast (Enhanced)',
-			'Success Criterion 1.4.7 Low or No Background Audio',
-			'Success Criterion 1.4.8 Visual Presentation',
-			'Success Criterion 1.4.9 Images of Text (No Exception)',
-			'Success Criterion 1.4.10 Reflow',
-			'Success Criterion 1.4.11 Non-text Contrast',
-			'Success Criterion 1.4.12 Text Spacing',
-			'Success Criterion 1.4.13 Content on Hover or Focus'
-	];
+            'Success Criterion 1.1.1 Non-text Content',
+            'Success Criterion 1.2.1 Audio-only and Video-only (Prerecorded)',
+            'Success Criterion 1.2.2 Captions (Prerecorded)',
+            'Success Criterion 1.2.3 Audio Description or Media Alternative (Prerecorded)',
+            'Success Criterion 1.2.4 Captions (Live)',
+            'Success Criterion 1.2.5 Audio Description (Prerecorded)',
+            'Success Criterion 1.2.6 Sign Language (Prerecorded)',
+            'Success Criterion 1.2.7 Extended Audio Description (Prerecorded)',
+            'Success Criterion 1.2.8 Media Alternative (Prerecorded)',
+            'Success Criterion 1.2.9 Audio-only (Live)',
+            'Success Criterion 1.3.1 Info and Relationships',
+            'Success Criterion 1.3.2 Meaningful Sequence',
+            'Success Criterion 1.3.3 Sensory Characteristics',
+            'Success Criterion 1.3.4 Orientation',
+            'Success Criterion 1.3.5 Identify Input Purpose',
+            'Success Criterion 1.3.6 Identify Purpose',
+            'Success Criterion 1.4.1 Use of Color',
+            'Success Criterion 1.4.2 Audio Control',
+            'Success Criterion 1.4.3 Contrast (Minimum)',
+            'Success Criterion 1.4.4 Resize text',
+            'Success Criterion 1.4.5 Images of Text',
+            'Success Criterion 1.4.6 Contrast (Enhanced)',
+            'Success Criterion 1.4.7 Low or No Background Audio',
+            'Success Criterion 1.4.8 Visual Presentation',
+            'Success Criterion 1.4.9 Images of Text (No Exception)',
+            'Success Criterion 1.4.10 Reflow',
+            'Success Criterion 1.4.11 Non-text Contrast',
+            'Success Criterion 1.4.12 Text Spacing',
+            'Success Criterion 1.4.13 Content on Hover or Focus'
+    ];
 
 var selectedPerceivable = [];
 var display_subject = "";
+var display_sc = "";
 let right_ans_count = 0;
 let wrong_ans_count = 0;
 
+let missed_sc = "";
+
 document.getElementById("input_div").style.display = "none";
 document.getElementById("result").style.display = "none";
+document.getElementById("missed_sc").style.display = "none";
+
 
 function selectUniqueSubject() {
 
@@ -156,6 +190,8 @@ function selectUniqueSubject() {
 	document.getElementById("input_div").style.display = "block";
 	document.getElementById("result").style.display = "flex";
 	document.getElementById("ans_input").value = "";
+
+    document.getElementById("submit_btn").disabled = false;
 	
 	document.getElementById("ans_input").focus();
 
@@ -167,16 +203,17 @@ function selectUniqueSubject() {
     var randomSubject = Perceivable.splice(randomIndex, 1)[0];
     selectedPerceivable.push(randomSubject);
     display_subject = randomSubject.substring(24, 100);
-    document.getElementById("demo1").innerHTML =  randomSubject.substring(0, 24);
+    display_sc = randomSubject.substring(0, 24)
+    document.getElementById("demo1").innerHTML =  display_sc;
   } else {
     document.getElementById("demo1").innerHTML = "No more Success Criteria available";
+    document.querySelector(".child_div").style.display = "none";
+    document.getElementById("missed_sc").style.display = "block";
   }
 }
 
 const checkAwnser = () => {
   var ans_input = document.getElementById("ans_input").value;
-
-  //document.getElementById("demo2").innerHTML = ans_input === display_subject ? "Correct" : "Wrong";
 
 if(!ans_input){
 	alert("Please enter Success Criteria Name")
@@ -190,19 +227,41 @@ if(!ans_input){
 })
 	document.getElementById("demo3").innerHTML = "<i class='fa-regular fa-circle-check' aria-hidden='true'></i> You entered correct awnser";  
 	document.getElementById("demo2").innerHTML = "";	
+    document.getElementById("submit_btn").disabled = true;
   }else{
+  	missed_sc += "<li>"+display_sc + " - "+display_subject+"</li>";
+  	console.log(missed_sc);
   	wrong_ans_count++;
   	document.getElementById("wrong_ans").innerHTML = "Wrong "+wrong_ans_count;
   	Swal.fire({
   icon: 'error',
   title: 'Correct awnser is :- '+display_subject,
 })
+    document.getElementById("submit_btn").disabled = true;
   	document.getElementById("demo2").innerHTML = " <i class='fa-regular fa-circle-xmark' aria-hidden='true'></i> You entered awnser is :- "+ans_input;
   	document.getElementById("demo3").innerHTML = "<i class='fa-regular fa-circle-check' aria-hidden='true'></i> Correct awnser is :- "+display_subject;
   }	
 }
 
 }
+
+console.log(Perceivable.length)
+
+if(Perceivable.length == 4){
+    console.log("if condition")
+}else{
+    console.log("else condition")
+}
+console.log(missed_sc)
+document.getElementById("list_missed_sc").innerHTML = missed_sc;
+
+
+
+function displayMissedSC(){
+    
+    document.getElementById("list_missed_sc").innerHTML = missed_sc;
+}
+
 
   </script>
 </body>
