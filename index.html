@@ -88,7 +88,7 @@
 <main>
 	<div class="parrent_div">
 		<div class="child_div">
-			<h1>WCAG Success Criteria Adaptable Quiz</h1>
+			<h1>WCAG Perceivable Success Criteria Quiz</h1>
 			<div id="result">
 				<div id="right_ans">Right 0</div>
 				<div id="wrong_ans">Wrong 0</div>
@@ -167,7 +167,7 @@ function selectUniqueSubject() {
     var randomSubject = Perceivable.splice(randomIndex, 1)[0];
     selectedPerceivable.push(randomSubject);
     display_subject = randomSubject.substring(24, 100);
-    document.getElementById("demo1").innerHTML =  randomSubject.substring(0, 23);
+    document.getElementById("demo1").innerHTML =  randomSubject.substring(0, 24);
   } else {
     document.getElementById("demo1").innerHTML = "No more Success Criteria available";
   }
